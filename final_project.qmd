@@ -66,8 +66,7 @@ family_trend = px.line(
     color="name",
     title="Contributing Family Workers Trend"
 )
-
-
+family_trend
 ```
 
 ```{python}
@@ -77,8 +76,7 @@ gdp_trend = px.line (gdp_selected,
                         y = "gdp",
                         color="name",
                         title= "gdp per capita Trend")
-
-
+gdp_trend
 ```
 
  
@@ -89,8 +87,7 @@ family_1993 = family_mini.query('year == 1993')[["name", "percentage"]]
 family_2020 = family_mini.query('year == 2020')[["name", "percentage"]]
 family_growth = pd.merge(family_1993, family_2020, on='name', suffixes=('_1993', '_2020'))
 family_growth['growth_rate']  = (family_growth['percentage_2020'] - family_growth['percentage_1993']) / family_growth['percentage_1993']
-
-
+family_growth
 ```
 
 ```{python}
@@ -98,8 +95,7 @@ gdp_1993 = gdp_mini.query('year == 1993')[["name", "gdp"]]
 gdp_2020 = gdp_mini.query('year == 2020')[["name", "gdp"]]
 gdp_growth = pd.merge(gdp_1993, gdp_2020, on='name', suffixes=('_1993', '_2020'))
 gdp_growth['growth_rate']  = (gdp_growth['gdp_2020'] - gdp_growth['gdp_1993']) / gdp_growth['gdp_1993']
-
-
+gdp_growth
 ```
 
 
@@ -111,9 +107,7 @@ family_growth_fig = px.histogram (family_growth,
                               y="growth_rate", 
                               color="name",
                               title="the growth rate of family worker from 1993 to 2020")
-
-
-
+family_growth_fig
 ```
 
 
@@ -123,7 +117,7 @@ gdp_growth_fig = px.histogram (gdp_growth,
                               y="growth_rate", 
                               color="name",
                               title="the growth rate of gdp pre capita from 1993 to 2020")
-
+gdp_growth_fig
 ```
 
 
@@ -136,7 +130,7 @@ family_selected_heatmap = px.density_heatmap(family_selected,
                          nbinsx=len(family_selected['year'].unique()),
                          color_continuous_scale="Viridis",
                          title="Family Worker Percentage Heatmap (1993-2020)")
-
+family_selected_heatmap
 ```
 
 ```{python}
@@ -147,7 +141,7 @@ gdp_selected_heatmap = px.density_heatmap(gdp_selected,
                          nbinsx=len(gdp_selected['year'].unique()),
                          color_continuous_scale="Viridis",
                          title="GDP per Capita Heatmap (1993-2020)")
-
+gdp_selected_heatmap
 ```
 
 
@@ -169,7 +163,7 @@ family_fig_map = px.choropleth(
     animation_frame="year",
     title="Family Worker Percentage",
 )
-
+family_fig_map
 ```
 
 ```{python}
@@ -189,21 +183,25 @@ gdp_fig_map = px.choropleth(
     animation_frame="year",
     title="gdp per capita from 1993 to 2020",
 )
-
+gdp_fig_map
 ```
 
 
 ```{python}
 # 11 the relationship between family worker and gdp per capita
-relationship = pd.merge(family_selected, gdp_selected, on= ['name', 'geo', 'year'],how="outer")
-relationship["country_code"] = coco.convert(
-   relationship["name"], to="ISO3"
+relationship = pd.merge(
+    family_selected, gdp_selected, on=["name", "geo", "year"], how="outer"
 )
+relationship["country_code"] = coco.convert(relationship["name"], to="ISO3")
 
-relationship_fig = px.scatter(relationship, x= 'year', y= 'gdp', color = 'country_code', size ='percentage',
-   )
-
-
+relationship_fig = px.scatter(
+    relationship,
+    x="year",
+    y="gdp",
+    color="country_code",
+    size="percentage",
+)
+relationship_fig
 ```
 
 
