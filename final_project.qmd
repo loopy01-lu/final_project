@@ -103,7 +103,6 @@ gdp_growth['growth_rate']  = (gdp_growth['gdp_2020'] - gdp_growth['gdp_1993']) /
 
 ```
 
- 8 illustrate growth rate
 
 
 ```{python}
@@ -224,7 +223,7 @@ relationship_fig = px.scatter(relationship, x= 'year', y= 'gdp', color = 'countr
 
 
 ## Row {height="30"}
-Family worker from 1993 to 2020 in Canada, Switzerland, Germany, China, India, Mongolia
+
 
 ### family worker in selected countris (1993-2020) {width="50" }
 
