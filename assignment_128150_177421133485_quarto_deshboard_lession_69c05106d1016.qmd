@@ -1,0 +1,162 @@
+
+
+
+---
+title: "Gapminder 2007"
+format: dashboard
+
+---
+
+```{python}
+import plotly.express as px
+p = px.line (y=[1,2,3])
+p
+```
+
+# page 1
+
+## Row {height="30%"}
+
+## column {width = " 33%"}
+
+```{python}
+p
+```
+
+
+### column {width="33%"}
+
+```{python}
+p
+```
+
+### column {width="33%"}
+
+```{python}
+p
+```
+## Row {height="60%"}
+
+### column {width="50%"}
+
+```{python}
+p
+```
+
+### column {.tabset width="30%"}
+
+#### tab 1
+
+```{python}
+p
+```
+
+#### tab 2
+
+```{python}
+p
+```
+
+# layouts
+
+## Row {height="30%"}
+
+## column {width = " 33%"}
+
+```{python}
+p
+```
+
+
+### column {width="33%"}
+
+```{python}
+p
+```
+
+### column {width="33%"}
+
+```{python}
+p
+```
+## Row {height="60%"}
+### column {width="50%"}
+
+```{python}
+p
+```
+### column {width="30%"}
+
+```{python}
+p
+```
+
+
+
+
+# tabset
+
+## Row {height="30%"}
+
+## column {.tabset width = " 33%"}
+
+#### Tab 1
+
+```{python}
+p
+```
+
+#### Tab 2
+hello world
+
+
+### column {width="33%"}
+
+```{python}
+p
+```
+
+### column {width="33%"}
+
+```{python}
+p
+```
+## Row {height="60%"}
+### column {width="50%"}
+
+```{python}
+p
+```
+### column {width="30%"}
+
+```{python}
+p
+```
+
+
+# value boxes
+
+```{python}
+tips = px.data.tips()
+tips
+```
+
+## {height="20%"}
+::: {.valuebox title="big number" color="primary" icon="heart"} 
+1
+:::
+
+::: {.valuebox title = "small number" color="secondary" icon="arrow-down"}
+1
+:::
+
+::: {.valuebox title = "medium number" color="success" icon="bar-chart"}
+1
+:::
+
+
+##
+
+```{python}
+p
+```
