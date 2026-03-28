@@ -221,7 +221,10 @@ relationship_fig = px.scatter(relationship, x= 'year', y= 'gdp', color = 'countr
 family_selected
 ```
 
+
+
 ### illustrate trend {width="50"}
+The share of contributing family workers declines as economies develop.
 
 ```{python}
 family_trend
@@ -236,6 +239,7 @@ family_growth
 ```
 
 ### The growth rate of family worker from 1993 to 2020 {width="30"}
+Countries show a decrease in family worker share over tim and Mongolia had a higest decrease.
 
 ```{python}
 family_growth_fig
@@ -243,7 +247,7 @@ family_growth_fig
 
 
 ### Family Worker Percentage Heatmap (1993-2020) {width="30"}
-
+Higher values are concentrated in developing countries and earlier years.
 ```{python}
 family_selected_heatmap
 ```
@@ -255,6 +259,7 @@ family_selected_heatmap
 family_selected_93_20
 ```
 ### Choropleth map
+Global distribution shows higher family labor concentration in less developed regions.
 
 ```{python}
 family_fig_map
@@ -277,7 +282,7 @@ gdp_selected
 ```
 
 ### illustrate trend {width="50"}
-
+GDP per capita increases significantly over time, especially in emerging economies
 ```{python}
 gdp_trend
 ```
@@ -291,14 +296,14 @@ gdp_growth
 ```
 
 ### The growth rate of family worker from 1993 to 2020 {width="30"}
-
+Emerging economies show higher growth rates than developed countries.
 ```{python}
 gdp_growth_fig
 ```
 
 
 ### Family Worker Percentage Heatmap (1993-2020) {width="30"}
-
+GDP levels increase over time across all countries.
 ```{python}
 gdp_selected_heatmap
 ```
@@ -310,7 +315,7 @@ gdp_selected_heatmap
 gdp_selected_93_20
 ```
 ### Choropleth map
-
+Global GDP distribution highlights strong regional inequality.
 ```{python}
 gdp_fig_map
 ```
@@ -326,6 +331,7 @@ relationship
 ```
 
 ## figure {height="30"}
+There is a negative relationship between family workers and GDP per capita.
 ```{python}
 relationship_fig
 ```
