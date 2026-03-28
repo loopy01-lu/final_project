@@ -2,8 +2,7 @@
 title: "Consider the relationship between family worker and gdp per capita"
 author: Lu Wang
 format: dashboard 
-execute:
-  echo: false
+
 ---
 
  
@@ -194,10 +193,6 @@ gdp_fig_map = px.choropleth(
 ```
 
 
-
-
-
-
 ```{python}
 # 11 the relationship between family worker and gdp per capita
 relationship = pd.merge(family_selected, gdp_selected, on= ['name', 'geo', 'year'],how="outer")
@@ -210,11 +205,6 @@ relationship_fig = px.scatter(relationship, x= 'year', y= 'gdp', color = 'countr
 
 
 ```
-
-
-
-
-
 
 
 
