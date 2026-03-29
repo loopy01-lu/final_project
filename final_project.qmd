@@ -5,151 +5,106 @@ format: dashboard
 
 ---
 
- 
-
-
-# 1 introduction
- Family worker is used to analysis a country's stage of economic developmet, also called "contributing family work", who is working a "self-employment" job in an establishment operated by a related person, with the same degree of commitment as the head of the establishment, but who are not partners and do not receive a direct salary or wage.GDP per capita is the best single indicator for measuring a country's economic prosperity and level of productivity. A high GDP per capita typically translates to better healthcare, longer life expectancy, and higher levels of education.
-
 
 ```{python}
 # Load libraries
 import pandas as pd
 import numpy as np
 import plotly.express as px
-from itables import show
+import itables
 import country_converter as coco
-```
 
+family_worker = pd.read_csv("data/family_worker.csv")
+gdp = pd.read_csv("data/gdp_pcap.csv")
 
+# 4 resharp data
+family_worker_wide = family_worker.melt(
+    id_vars=["name", "geo"], var_name="year", value_name="percentage"
+)
 
+gdp_wide = gdp.melt(id_vars=["name", "geo"], var_name="year", value_name="gdp")
 
-```{python}
- # 3 import data
-family_worker = pd.read_csv ("data/family_worker.csv")
-gdp = pd.read_csv ("data/gdp_pcap.csv")
-```
-
-
-
-```{python}
- # 4 resharp data
-family_worker_wide = family_worker.melt(id_vars=["name","geo"], var_name="year", value_name="percentage")
-
-gdp_wide =gdp.melt(id_vars=["name","geo"], var_name='year', value_name="gdp")
-
-
-```
-
-
-
-```{python}
 #  5 select data
-select_country = ["Canada", "Switzerland", "Germany", "China", "India","Mongolia"]
-family_mini= family_worker_wide.query('name in @ select_country')
-family_mini ['year'] = family_mini['year'].astype(int)
-family_selected = family_mini.query('1993 <= year <= 2020').copy()
+select_country = ["Canada", "Switzerland", "Germany", "China", "India", "Mongolia"]
+family_mini = family_worker_wide.query("name in @ select_country")
+family_mini["year"] = family_mini["year"].astype(int)
+family_selected = family_mini.query("1993 <= year <= 2020").copy()
 
-gdp_mini = gdp_wide.query('name in @ select_country')
-gdp_mini['year'] = gdp_mini['year'].astype(int)
-gdp_selected = gdp_mini.query('1993 <= year <= 2020').copy()
+gdp_mini = gdp_wide.query("name in @ select_country")
+gdp_mini["year"] = gdp_mini["year"].astype(int)
+gdp_selected = gdp_mini.query("1993 <= year <= 2020").copy()
 
-```
-
-
-```{python}
 # 6 illustrate trend
 family_trend = px.line(
     family_selected,
     x="year",
     y="percentage",
     color="name",
-    title="Contributing Family Workers Trend"
+    title="Contributing Family Workers Trend",
 )
-family_trend
-```
 
-```{python}
 
-gdp_trend = px.line (gdp_selected, 
-                        x = "year",
-                        y = "gdp",
-                        color="name",
-                        title= "gdp per capita Trend")
-gdp_trend
-```
+gdp_trend = px.line(
+    gdp_selected, x="year", y="gdp", color="name", title="gdp per capita Trend"
+)
 
- 
-
-```{python}
 # 7 query, merge data and calculate growth rate
-family_1993 = family_mini.query('year == 1993')[["name", "percentage"]]
-family_2020 = family_mini.query('year == 2020')[["name", "percentage"]]
-family_growth = pd.merge(family_1993, family_2020, on='name', suffixes=('_1993', '_2020'))
-family_growth['growth_rate']  = (family_growth['percentage_2020'] - family_growth['percentage_1993']) / family_growth['percentage_1993']
-family_growth
-```
+family_1993 = family_mini.query("year == 1993")[["name", "percentage"]]
+family_2020 = family_mini.query("year == 2020")[["name", "percentage"]]
+family_growth = pd.merge(
+    family_1993, family_2020, on="name", suffixes=("_1993", "_2020")
+)
+family_growth["growth_rate"] = (
+    family_growth["percentage_2020"] - family_growth["percentage_1993"]
+) / family_growth["percentage_1993"]
 
-```{python}
-gdp_1993 = gdp_mini.query('year == 1993')[["name", "gdp"]]
-gdp_2020 = gdp_mini.query('year == 2020')[["name", "gdp"]]
-gdp_growth = pd.merge(gdp_1993, gdp_2020, on='name', suffixes=('_1993', '_2020'))
-gdp_growth['growth_rate']  = (gdp_growth['gdp_2020'] - gdp_growth['gdp_1993']) / gdp_growth['gdp_1993']
-gdp_growth
-```
+gdp_1993 = gdp_mini.query("year == 1993")[["name", "gdp"]]
+gdp_2020 = gdp_mini.query("year == 2020")[["name", "gdp"]]
+gdp_growth = pd.merge(gdp_1993, gdp_2020, on="name", suffixes=("_1993", "_2020"))
+gdp_growth["growth_rate"] = (
+    gdp_growth["gdp_2020"] - gdp_growth["gdp_1993"]
+) / gdp_growth["gdp_1993"]
 
+family_growth_fig = px.histogram(
+    family_growth,
+    x="name",
+    y="growth_rate",
+    color="name",
+    title="the growth rate of family worker from 1993 to 2020",
+)
 
+gdp_growth_fig = px.histogram(
+    gdp_growth,
+    x="name",
+    y="growth_rate",
+    color="name",
+    title="the growth rate of gdp pre capita from 1993 to 2020",
+)
 
-```{python}
-#8 illustrate growth rate
-family_growth_fig = px.histogram (family_growth, 
-                              x= "name", 
-                              y="growth_rate", 
-                              color="name",
-                              title="the growth rate of family worker from 1993 to 2020")
-family_growth_fig
-```
-
-
-```{python}
-gdp_growth_fig = px.histogram (gdp_growth, 
-                              x= "name", 
-                              y="growth_rate", 
-                              color="name",
-                              title="the growth rate of gdp pre capita from 1993 to 2020")
-gdp_growth_fig
-```
-
-
-```{python}
 # 9  Heatmap
-family_selected_heatmap = px.density_heatmap(family_selected, 
-                         x="year", 
-                         y="name", 
-                         z="percentage", 
-                         nbinsx=len(family_selected['year'].unique()),
-                         color_continuous_scale="Viridis",
-                         title="Family Worker Percentage Heatmap (1993-2020)")
-family_selected_heatmap
-```
+family_selected_heatmap = px.density_heatmap(
+    family_selected,
+    x="year",
+    y="name",
+    z="percentage",
+    nbinsx=len(family_selected["year"].unique()),
+    color_continuous_scale="Viridis",
+    title="Family Worker Percentage Heatmap (1993-2020)",
+)
 
-```{python}
-gdp_selected_heatmap = px.density_heatmap(gdp_selected, 
-                         x="year", 
-                         y="name", 
-                         z="gdp", 
-                         nbinsx=len(gdp_selected['year'].unique()),
-                         color_continuous_scale="Viridis",
-                         title="GDP per Capita Heatmap (1993-2020)")
-gdp_selected_heatmap
-```
+gdp_selected_heatmap = px.density_heatmap(
+    gdp_selected,
+    x="year",
+    y="name",
+    z="gdp",
+    nbinsx=len(gdp_selected["year"].unique()),
+    color_continuous_scale="Viridis",
+    title="GDP per Capita Heatmap (1993-2020)",
+)
 
-
-```{python}
 # 10 Create a choropleth map from 1993 to 2020.
-family_worker_wide['year'] = family_worker_wide['year'].astype(int)
-family_selected_93_20 = family_worker_wide.query('1993 <= year <= 2020').copy()
-
+family_worker_wide["year"] = family_worker_wide["year"].astype(int)
+family_selected_93_20 = family_worker_wide.query("1993 <= year <= 2020").copy()
 
 
 family_selected_93_20["country_code"] = coco.convert(
@@ -163,18 +118,12 @@ family_fig_map = px.choropleth(
     animation_frame="year",
     title="Family Worker Percentage",
 )
-family_fig_map
-```
 
-```{python}
-gdp_wide['year'] = gdp_wide['year'].astype(int)
-gdp_selected_93_20 = gdp_wide.query('1993 <= year <= 2020').copy()
+gdp_wide["year"] = gdp_wide["year"].astype(int)
+gdp_selected_93_20 = gdp_wide.query("1993 <= year <= 2020").copy()
 
 
-
-gdp_selected_93_20["country_code"] = coco.convert(
-    gdp_selected_93_20["name"], to="ISO3"
-)
+gdp_selected_93_20["country_code"] = coco.convert(gdp_selected_93_20["name"], to="ISO3")
 gdp_fig_map = px.choropleth(
     gdp_selected_93_20,
     locations="country_code",
@@ -183,11 +132,8 @@ gdp_fig_map = px.choropleth(
     animation_frame="year",
     title="gdp per capita from 1993 to 2020",
 )
-gdp_fig_map
-```
 
 
-```{python}
 # 11 the relationship between family worker and gdp per capita
 relationship = pd.merge(
     family_selected, gdp_selected, on=["name", "geo", "year"], how="outer"
@@ -201,25 +147,25 @@ relationship_fig = px.scatter(
     color="country_code",
     size="percentage",
 )
-relationship_fig
 ```
 
+
+# Home Introduction
+ Family worker is used to analysis a country's stage of economic developmet, also called "contributing family work", who is working a "self-employment" job in an establishment operated by a related person, with the same degree of commitment as the head of the establishment, but who are not partners and do not receive a direct salary or wage.GDP per capita is the best single indicator for measuring a country's economic prosperity and level of productivity. A high GDP per capita typically translates to better healthcare, longer life expectancy, and higher levels of education.
 
 
 # Page 1 family worker
 
 
 
-## Row {height="30"}
+## Row 1 {height="30"}
 
 
-### family worker in selected countris (1993-2020) {width="50" }
+### Family worker in selected countris (1993-2020) {width="50" }
 
 ```{python}
 family_selected
 ```
-
-
 
 ### illustrate trend {width="50"}
 The share of contributing family workers declines as economies develop.
@@ -228,7 +174,7 @@ The share of contributing family workers declines as economies develop.
 family_trend
 ```
 
-## Row {height="30"}
+## Row 2 {height="30"}
 
 ### Growth rate (1993-2020) {width="30"}
 
@@ -237,7 +183,7 @@ family_growth
 ```
 
 ### The growth rate of family worker from 1993 to 2020 {width="30"}
-Countries show a decrease in family worker share over tim and Mongolia had a higest decrease.
+Countries show a decrease in family worker share over time and Mongolia had a higest decrease.
 
 ```{python}
 family_growth_fig
@@ -250,7 +196,7 @@ Higher values are concentrated in developing countries and earlier years.
 family_selected_heatmap
 ```
 
-## Choropleth map from 1993 to 2020 {height="30"}
+## Row 3 {height="30"}
 
 ### table
 ```{python}
@@ -270,8 +216,8 @@ family_fig_map
 
 # Page2 gdp per capita
 
-## Row {height="30"}
-GDP per captia from 1993 to 2020 in Canada, Switzerland, Germany, China, India, Mongolia
+## Row 1 {height="30"}
+
 
 ### GDP in selected countris (1993-2020) {width="50" }
 
@@ -312,6 +258,7 @@ gdp_selected_heatmap
 ```{python}
 gdp_selected_93_20
 ```
+
 ### Choropleth map
 Global GDP distribution highlights strong regional inequality.
 ```{python}
