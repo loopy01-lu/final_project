@@ -14,17 +14,18 @@ import plotly.express as px
 import itables
 import country_converter as coco
 
+# 1 import data
 family_worker = pd.read_csv("data/family_worker.csv")
 gdp = pd.read_csv("data/gdp_pcap.csv")
 
-# 4 resharp data
+# 2 resharp data to long form
 family_worker_wide = family_worker.melt(
     id_vars=["name", "geo"], var_name="year", value_name="percentage"
 )
 
 gdp_wide = gdp.melt(id_vars=["name", "geo"], var_name="year", value_name="gdp")
 
-#  5 select data
+#  3 select 6 countries' change (Canada, Switzerland, Germany, China, India, and Mogolia) including 3 west countries and 3 east countries  from 1993 to 2020.
 select_country = ["Canada", "Switzerland", "Germany", "China", "India", "Mongolia"]
 family_mini = family_worker_wide.query("name in @ select_country")
 family_mini["year"] = family_mini["year"].astype(int)
@@ -34,13 +35,34 @@ gdp_mini = gdp_wide.query("name in @ select_country")
 gdp_mini["year"] = gdp_mini["year"].astype(int)
 gdp_selected = gdp_mini.query("1993 <= year <= 2020").copy()
 
-# 6 illustrate trend
+# 4  illustrate the change trend for 6 countries from 1993 to 2020, China has a larger decrease from 28% to 10%, India still higher than 10%, west countries have very lower percentage and no large change.
 family_trend = px.line(family_selected, x="year", y="percentage", color="name")
 
-
+# 5 illustrate the change trend for 6 countries from 1993 to 2020,growth trend are similiar.
 gdp_trend = px.line(gdp_selected, x="year", y="gdp", color="name")
 
-# 7 query, merge data and calculate growth rate
+
+# 6 other mathod (Heatmap)used to illustrate the change
+family_selected_heatmap = px.density_heatmap(
+    family_selected,
+    x="year",
+    y="name",
+    z="percentage",
+    nbinsx=len(family_selected["year"].unique()),
+    color_continuous_scale="Viridis",
+)
+
+gdp_selected_heatmap = px.density_heatmap(
+    gdp_selected,
+    x="year",
+    y="name",
+    z="gdp",
+    nbinsx=len(gdp_selected["year"].unique()),
+    color_continuous_scale="Viridis",
+)
+
+
+# 7 query the 1993 or 2020 data and merge data to calculate growth rate
 family_1993 = family_mini.query("year == 1993")[["name", "percentage"]]
 family_2020 = family_mini.query("year == 2020")[["name", "percentage"]]
 family_growth = pd.merge(
@@ -61,30 +83,10 @@ family_growth_fig = px.histogram(family_growth, x="name", y="growth_rate", color
 
 gdp_growth_fig = px.histogram(gdp_growth, x="name", y="growth_rate", color="name")
 
-# 9  Heatmap
-family_selected_heatmap = px.density_heatmap(
-    family_selected,
-    x="year",
-    y="name",
-    z="percentage",
-    nbinsx=len(family_selected["year"].unique()),
-    color_continuous_scale="Viridis",
-)
 
-gdp_selected_heatmap = px.density_heatmap(
-    gdp_selected,
-    x="year",
-    y="name",
-    z="gdp",
-    nbinsx=len(gdp_selected["year"].unique()),
-    color_continuous_scale="Viridis",
-)
-
-# 10 Create a choropleth map from 1993 to 2020.
+# 7 Create a choropleth map from 1993 to 2020.
 family_worker_wide["year"] = family_worker_wide["year"].astype(int)
 family_selected_93_20 = family_worker_wide.query("1993 <= year <= 2020").copy()
-
-
 family_selected_93_20["country_code"] = coco.convert(
     family_selected_93_20["name"], to="ISO3"
 )
@@ -98,8 +100,6 @@ family_fig_map = px.choropleth(
 
 gdp_wide["year"] = gdp_wide["year"].astype(int)
 gdp_selected_93_20 = gdp_wide.query("1993 <= year <= 2020").copy()
-
-
 gdp_selected_93_20["country_code"] = coco.convert(gdp_selected_93_20["name"], to="ISO3")
 gdp_fig_map = px.choropleth(
     gdp_selected_93_20,
@@ -110,7 +110,7 @@ gdp_fig_map = px.choropleth(
 )
 
 
-# 11 the relationship between family worker and gdp per capita
+# 8 the relationship between family worker and gdp per capita
 relationship = pd.merge(
     family_selected, gdp_selected, on=["name", "geo", "year"], how="outer"
 )
@@ -245,7 +245,7 @@ gdp_growth_fig
 
 
 
-# Page 3 the relationship between family worker and gdp per capita
+# Page 3 Relationship 
 
 ## row 1 {height="40%"}
 
