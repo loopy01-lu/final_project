@@ -84,7 +84,7 @@ family_growth_fig = px.histogram(family_growth, x="name", y="growth_rate", color
 gdp_growth_fig = px.histogram(gdp_growth, x="name", y="growth_rate", color="name")
 
 
-# 7 Create a choropleth map from 1993 to 2020.
+# 8 Create a choropleth map from 1993 to 2020.
 family_worker_wide["year"] = family_worker_wide["year"].astype(int)
 family_selected_93_20 = family_worker_wide.query("1993 <= year <= 2020").copy()
 family_selected_93_20["country_code"] = coco.convert(
@@ -110,7 +110,7 @@ gdp_fig_map = px.choropleth(
 )
 
 
-# 8 the relationship between family worker and gdp per capita
+# 9 the relationship between family worker and gdp per capita
 relationship = pd.merge(
     family_selected, gdp_selected, on=["name", "geo", "year"], how="outer"
 )
